@@ -39,6 +39,11 @@ private:
 	float SuspensionDamping;
 	FVector PreviousLocation;
 	float Compression;
+	bool  bIsInAir;
 
 	void SuspensionRayCast();
+
+public:
+
+	FORCEINLINE bool GetInAir(){return bIsInAir;}
 };

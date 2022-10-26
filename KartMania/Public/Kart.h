@@ -42,7 +42,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	UBoxComponent* KartCollisionBox;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* KartMesh;
+	USkeletalMeshComponent* KartMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	float AcceleratingForce;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
@@ -59,6 +59,7 @@ public:
 	USuspension* Suspension_RL;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	USuspension* Suspension_RR;
+	
 
 	void Accelerate(float Value);
 	void RotateKart(float Value);

@@ -3,6 +3,8 @@
 
 #include "Kart.h"
 
+#include "Kismet/KismetMathLibrary.h"
+
 // Sets default values
 AKart::AKart():
 AcceleratingForce(1000000.0),
@@ -12,7 +14,7 @@ RotatingForce(200.0f)
 	PrimaryActorTick.bCanEverTick = true;
 
 	KartCollisionBox = CreateDefaultSubobject<UBoxComponent>("Kart Collision Box");
-	KartMesh = CreateDefaultSubobject<UStaticMeshComponent>("Kart Mesh");
+	KartMesh = CreateDefaultSubobject<USkeletalMeshComponent>("Kart Mesh");
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>("Camera Boom");
 	Camera = CreateDefaultSubobject<UCameraComponent>("Camera");
 	CenterOfMass = CreateDefaultSubobject<USceneComponent>("Center Of Mass");
@@ -35,6 +37,8 @@ RotatingForce(200.0f)
 
 	KartCollisionBox->SetLinearDamping(3.0f);
 	KartCollisionBox->SetAngularDamping(5.0f);
+
+	
 }
 
 // Called when the game starts or when spawned
@@ -48,8 +52,12 @@ void AKart::BeginPlay()
 void AKart::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	UE_LOG(LogTemp, Warning, TEXT("Loc : %f"), GetVelocity().Y);
+	
+	
+	if(GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(2, -1, FColor::Green, FString::Printf(TEXT("Velocity: %f"), GetVelocity().Size()));
+	}
 }
 
 void AKart::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -62,6 +70,9 @@ void AKart::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void AKart::Accelerate(float Value)
 {
+	if(Suspension_FL->GetInAir() && Suspension_FR->GetInAir() && Suspension_RL->GetInAir() && Suspension_RR->GetInAir())
+		return;
+	
 	if(Value>0)
 	{
 		KartCollisionBox->AddForceAtLocation(KartCollisionBox->GetForwardVector()*AcceleratingForce, CenterOfMass->GetComponentLocation());
@@ -79,3 +90,4 @@ void AKart::RotateKart(float Value)
 		KartCollisionBox->AddTorqueInDegrees(FVector(0, 0, 1)*RotatingForce*Value, NAME_None, true);
 	}
 }
+

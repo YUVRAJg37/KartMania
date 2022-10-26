@@ -4,9 +4,10 @@
 #include "Components/Suspension.h"
 	
 USuspension::USuspension():
-SuspensionRayCastDistance(60.0f),
-SuspensionStrength(100000),
-SuspensionDamping(100)
+SuspensionRayCastDistance(100.0f),
+SuspensionStrength(480000),
+SuspensionDamping(10),
+bIsInAir(false)
 {
 	PrimaryComponentTick.bCanEverTick = true;
 }
@@ -37,6 +38,8 @@ void USuspension::SuspensionRayCast()
 
 	if(HitResult.bBlockingHit)
 	{
+		bIsInAir = false;
+		
 		Compression = 1 - HitResult.Distance/SuspensionRayCastDistance;
 		
 		DrawDebugLine(GetWorld(), GetComponentLocation(), HitResult.ImpactPoint, FColor::Green);
@@ -45,6 +48,10 @@ void USuspension::SuspensionRayCast()
 		float SuspensionForce = SuspensionStrength*Compression - SuspensionDamping*GetSuspensionVelocity().Z;
 		BodyRef->AddForceAtLocation(BodyRef->GetUpVector()*SuspensionForce, GetComponentLocation());
 		DrawDebugString(GetWorld(), GetComponentLocation() , FString::Printf(TEXT("%.2f"), Compression), nullptr, FColor::White, 0, false, 2);
+	}
+	else
+	{
+		bIsInAir = true;
 	}
 }
 
